@@ -6,22 +6,19 @@ export default class NotesView {
         this.onNoteEdit = onNoteEdit;
         this.onNoteDelete = onNoteDelete;
         this.root.innerHTML = `
-        <div class="box1" >
-            <h1 class="header">Your  Privacy In Your Hand</h1>
-            <div class="box1-1">
-                <input type="text" class="notes__title" id="text1" placeholder="Enter the title">
-                <textarea class="text2" placeholder="Enter your note"></textarea>
-                <button class="notes__add" id="add">Add Note</button>
+            <div class="notes__sidebar">
+                <button class="notes__add" type="button">Add Note</button>
+                <div class="notes__list"></div>
             </div>
-        </div>
-
-        <div class = "box2"></div>
-
+            <div class="notes__preview">
+                <input class="notes__title" type="text" placeholder="New Note...">
+                <textarea class="notes__body">Take Note...</textarea>
+            </div>
         `;
 
         const btnAddNote = this.root.querySelector(".notes__add");
         const inpTitle = this.root.querySelector(".notes__title");
-        const inpBody = this.root.querySelector(".text2");
+        const inpBody = this.root.querySelector(".notes__body");
 
         btnAddNote.addEventListener("click", () => {
             this.onNoteAdd();
@@ -33,44 +30,69 @@ export default class NotesView {
                 const updatedBody = inpBody.value.trim();
 
                 this.onNoteEdit(updatedTitle, updatedBody);
-
             });
         });
 
-        console.log(this._createListItemHTML(300, "Hey", "yeah", new Date()));
-
-
+        this.updateNotePreviewVisibility(false);
     }
+
     _createListItemHTML(id, title, body, updated) {
         const MAX_BODY_LENGTH = 60;
 
         return `
-        <div data-note-id="${id}" >
-            <h1>Your Notes</h1>
-            <div class="box2-2">
-                <h3 class="note-title">${title}</h3>
-                <p class="note">
-                ${body.substring(0, MAX_BODY_LENGTH)}
-                ${body.length > MAX_BODY_LENGTH ? "..." : ""}
-                </p>
-                <button class="delete">Delete Note</button>
-                <button class="edit">Edit Note</button>
-                <h6 class="date">${updated.toLocaleString(undefined, { dateStyle: "full", timeStyle: "short" })} </h6>
+            <div class="notes__list-item" data-note-id="${id}">
+                <div class="notes__small-title">${title}</div>
+                <div class="notes__small-body">
+                    ${body.substring(0, MAX_BODY_LENGTH)}
+                    ${body.length > MAX_BODY_LENGTH ? "..." : ""}
+                </div>
+                <div class="notes__small-updated">
+                    ${updated.toLocaleString(undefined, { dateStyle: "full", timeStyle: "short" })}
+                </div>
             </div>
-        </div>`
+        `;
     }
 
     updateNoteList(notes) {
+        const notesListContainer = this.root.querySelector(".notes__list");
 
-        const notesListContainer = this.root.querySelector(".box2");
-        //Empty List
+        // Empty list
         notesListContainer.innerHTML = "";
 
         for (const note of notes) {
-            const Html = this._createListItemHTML(note.id, note.title, note.body, new Date(note.updated));
+            const html = this._createListItemHTML(note.id, note.title, note.body, new Date(note.updated));
 
-            notesListContainer.insertAdjacentHTML("beforeend",Html);
+            notesListContainer.insertAdjacentHTML("beforeend", html);
         }
 
+        // Add select/delete events for each list item
+        notesListContainer.querySelectorAll(".notes__list-item").forEach(noteListItem => {
+            noteListItem.addEventListener("click", () => {
+                this.onNoteSelect(noteListItem.dataset.noteId);
+            });
+
+            noteListItem.addEventListener("dblclick", () => {
+                const doDelete = confirm("Are you sure you want to delete this note?");
+
+                if (doDelete) {
+                    this.onNoteDelete(noteListItem.dataset.noteId);
+                }
+            });
+        });
+    }
+
+    updateActiveNote(note) {
+        this.root.querySelector(".notes__title").value = note.title;
+        this.root.querySelector(".notes__body").value = note.body;
+
+        this.root.querySelectorAll(".notes__list-item").forEach(noteListItem => {
+            noteListItem.classList.remove("notes__list-item--selected");
+        });
+
+        this.root.querySelector(`.notes__list-item[data-note-id="${note.id}"]`).classList.add("notes__list-item--selected");
+    }
+
+    updateNotePreviewVisibility(visible) {
+        this.root.querySelector(".notes__preview").style.visibility = visible ? "visible" : "hidden";
     }
 }
