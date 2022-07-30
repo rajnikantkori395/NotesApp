@@ -46,6 +46,7 @@ export default class NotesView {
                     ${body.substring(0, MAX_BODY_LENGTH)}
                     ${body.length > MAX_BODY_LENGTH ? "..." : ""}
                 </div>
+                <button class="notes__delete" data-delete-id="${id}">delete</button>
                 <div class="notes__small-updated">
                     ${updated.toLocaleString(undefined, { dateStyle: "full", timeStyle: "short" })}
                 </div>
@@ -76,6 +77,16 @@ export default class NotesView {
 
                 if (doDelete) {
                     this.onNoteDelete(noteListItem.dataset.noteId);
+                }
+            });
+        });
+
+        notesListContainer.querySelectorAll(".notes__delete").forEach(noteListItem => {
+            noteListItem.addEventListener("click", () => {
+                const doDelete = confirm("Are you sure you want to delete this note?");
+
+                if (doDelete) {
+                    this.onNoteDelete(noteListItem.dataset.deleteId);
                 }
             });
         });
