@@ -28,8 +28,13 @@ export default class NotesView {
             inputField.addEventListener("blur", () => {
                 const updatedTitle = inpTitle.value.trim();
                 const updatedBody = inpBody.value.trim();
+                if (inpTitle.value == null) {
+                    alert('first enter title');
+                } else {
+                    this.onNoteEdit(updatedTitle, updatedBody);
+                }
 
-                this.onNoteEdit(updatedTitle, updatedBody);
+
             });
         });
 
@@ -81,15 +86,15 @@ export default class NotesView {
             });
         });
 
-        notesListContainer.querySelectorAll(".notes__delete").forEach(noteListItem => {
-            noteListItem.addEventListener("click", () => {
-                const doDelete = confirm("Are you sure you want to delete this note?");
+        // notesListContainer.querySelectorAll(".notes__delete").forEach(noteListItem => {
+        //     noteListItem.addEventListener("click", () => {
+        //         const doDelete = confirm("Are you sure you want to delete this note?");
 
-                if (doDelete) {
-                    this.onNoteDelete(noteListItem.dataset.deleteId);
-                }
-            });
-        });
+        //         if (doDelete) {
+        //             this.onNoteDelete(noteListItem.dataset.deleteId);
+        //         }
+        //     });
+        // });
     }
 
     updateActiveNote(note) {

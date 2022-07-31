@@ -8,6 +8,7 @@ export default class App {
         this.view = new NotesView(root, this._handlers());
 
         this._refreshNotes();
+        
     }
 
     _refreshNotes() {
