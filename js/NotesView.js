@@ -28,7 +28,7 @@ export default class NotesView {
             inputField.addEventListener("blur", () => {
                 const updatedTitle = inpTitle.value.trim();
                 const updatedBody = inpBody.value.trim();
-                if (inpTitle.value == null) {
+                if (inpTitle.value == "") {
                     alert('first enter title');
                 } else {
                     this.onNoteEdit(updatedTitle, updatedBody);
