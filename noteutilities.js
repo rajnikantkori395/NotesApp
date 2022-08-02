@@ -24,6 +24,7 @@ document.getElementById('add').addEventListener('click', () => {
         let note = new Note(id, title, desc);
         addNotes(note);
         populateData();
+        document.location.reload(true);
         document.getElementById("text1").value = '';
         document.getElementById('desc').value = '';
         alert('Note Added');
@@ -31,26 +32,28 @@ document.getElementById('add').addEventListener('click', () => {
 });
 // when delete button clicked
 
-// root.querySelectorAll('_delete').forEach(element =>{
-//     element.addEventListener('click',()=>{
-//         const doDelete= confirm('Are you sure?');
-//         if(doDelete){
-//             deleteNote(element.dataset.deleteId);
-//         }
-//     });
-// });
+root.querySelectorAll('._delete').forEach(element =>{
+    element.addEventListener('click',()=>{
+        const doDelete= confirm('Are you sure?');
+        if(doDelete){
+            deleteNote(element.dataset.deleteId);
+            populateData();
+            document.location.reload(true);
+        }
+    });
+});
 
 // function onEditNoteClick(id) {
 
 // }
-document.querySelector('.edt').addEventListener('click', editt);
+root.querySelectorAll('.edit').forEach(element => element.addEventListener('click', editt));
 function editt() {
 
     let title = document.getElementById("text1").value;
     let desc = document.getElementById('desc').value;
-    let id = prompt("enter title no.");
-    if (id) {
-        let note = new Note(id, title, desc);
+    
+    if (element.dataset.editId) {
+        let note = new Note(element.dataset.editId, title, desc);
         UpdateNotes(note);
         console.log(note);
         populateData();
@@ -81,18 +84,23 @@ function populateData() {
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
     if (main_data_array != null) {
         let str = "";
+        let sNo = 1;
         main_data_array.forEach((element) => {
 
             str = str +
-                `<div class="box2-2"><h3>${element.id}</h3>
+                `<div class="box2-2">
+                <h3>${sNo}</h3>
             <h3 class="note-title">${element.title}</h3>
             <p class="note">${element.desc}</p>
-            <button class="_delete" onclick="deleteNote(${element.id})">Delete Note</button>
+            <button class="_delete" data-delete-id="${element.id}">Delete Note</button>
             <button class="edit" >Edit Note</button>
             <p class="date">${element._date} </p>
             </div>`
+
+            sNo++;
         });
         root.innerHTML = str;
+        
     }
 }
 
@@ -120,13 +128,14 @@ function deleteNote(id) {
     let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
 
     let searched_item = main_data_array.filter(t => t.id == id);
-    let index = main_data_array.findIndex(x => x.Id === id);
+    // let index = main_data_array.findIndex(x => x.Id === id);
     if (searched_item != null) {
         deleted_array.push(searched_item);
-        main_data_array.splice(index, 1);
+        // main_data_array.splice(index, 1);
         //apply remove logic
     }
-    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(main_data_array));
+    const newNotes = main_data_array.filter(note => note.id != id);
+    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newNotes));
     localStorage.setItem(NOTES_DELETED_STORE, JSON.stringify(deleted_array));
 }
 
