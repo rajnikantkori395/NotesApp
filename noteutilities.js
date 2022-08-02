@@ -46,23 +46,50 @@ root.querySelectorAll('._delete').forEach(element =>{
 // function onEditNoteClick(id) {
 
 // }
-root.querySelectorAll('.edit').forEach(element => element.addEventListener('click', editt));
-function editt() {
+// document.querySelector('.edt').addEventListener('click', editt);
+// function editt() {
 
-    let title = document.getElementById("text1").value;
-    let desc = document.getElementById('desc').value;
-    
-    if (element.dataset.editId) {
-        let note = new Note(element.dataset.editId, title, desc);
-        UpdateNotes(note);
-        console.log(note);
-        populateData();
-        document.getElementById("text1").value = '';
-        document.getElementById('desc').value = '';
-        alert('Note Updated');
-    }
-}
+//     let title = document.getElementById("text1").value;
+//     let desc = document.getElementById('desc').value;
+//     let id = prompt("enter title no.");
+//     if (id) {
+//         let note = new Note(id, title, desc);
+//         UpdateNotes(note);
+//         console.log(note);
+//         populateData();
+//         document.getElementById("text1").value = '';
+//         document.getElementById('desc').value = '';
+//         alert('Note Updated');
+//     }
+// }
+root.querySelectorAll('.edit').forEach(element => {
+    element.addEventListener('click', () => {
+        let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+        let id = element.dataset.editId;
+        if (id) {
+            let searched_item = main_data_array.filter(t => t.id == id);
+            if (searched_item != null) {
+                document.getElementById("text1").value = searched_item[0].title;
+                document.getElementById("desc").value = searched_item[0].desc;
+                document.querySelector('.edt').addEventListener('click', () => {
+                    let title = document.getElementById("text1").value;
+                    let desc = document.getElementById('desc').value;
+                    if (title == '') { alert('First enter title') }
+                    else {
+                        let note = new Note(id, title, desc);
+                        UpdateNotes(note);
+                        populateData();
+                        document.getElementById("text1").value = '';
+                        document.getElementById('desc').value = '';
+                        alert('Note Updated');
+                        document.location.reload(true);
+                    }
+                });
 
+            }
+        }
+    });
+});
 
 
 
@@ -93,7 +120,7 @@ function populateData() {
             <h3 class="note-title">${element.title}</h3>
             <p class="note">${element.desc}</p>
             <button class="_delete" data-delete-id="${element.id}">Delete Note</button>
-            <button class="edit" >Edit Note</button>
+            <button class="edit" data-edit-id=${element.id} >Edit Note</button>
             <p class="date">${element._date} </p>
             </div>`
 
