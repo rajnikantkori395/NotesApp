@@ -32,10 +32,10 @@ document.getElementById('add').addEventListener('click', () => {
 });
 // when delete button clicked
 
-root.querySelectorAll('._delete').forEach(element =>{
-    element.addEventListener('click',()=>{
-        const doDelete= confirm('Are you sure?');
-        if(doDelete){
+root.querySelectorAll('._delete').forEach(element => {
+    element.addEventListener('click', () => {
+        const doDelete = confirm('Are you sure?');
+        if (doDelete) {
             deleteNote(element.dataset.deleteId);
             populateData();
             document.location.reload(true);
@@ -64,6 +64,7 @@ root.querySelectorAll('._delete').forEach(element =>{
 // }
 root.querySelectorAll('.edit').forEach(element => {
     element.addEventListener('click', () => {
+        document.getElementById('add').disabled = true;
         let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
         let id = element.dataset.editId;
         if (id) {
@@ -95,6 +96,8 @@ root.querySelectorAll('.edit').forEach(element => {
 
 
 
+
+
 function onDeleteNotesClick(holderControl) {
     //evaluate all the checkboxes that are checked 
 }
@@ -112,6 +115,9 @@ function populateData() {
     if (main_data_array != null) {
         let str = "";
         let sNo = 1;
+        main_data_array.sort((a, b) => {
+            return new Date(a._date) > new Date(b._date) ? -1 : 1;
+        });
         main_data_array.forEach((element) => {
 
             str = str +
@@ -127,7 +133,7 @@ function populateData() {
             sNo++;
         });
         root.innerHTML = str;
-        
+
     }
 }
 
@@ -157,7 +163,7 @@ function deleteNote(id) {
     let searched_item = main_data_array.filter(t => t.id == id);
     // let index = main_data_array.findIndex(x => x.Id === id);
     if (searched_item != null) {
-        deleted_array.push(searched_item);
+        deleted_array.push(searched_item[0]);
         // main_data_array.splice(index, 1);
         //apply remove logic
     }
@@ -168,7 +174,7 @@ function deleteNote(id) {
 
 
 function UpdateNotes(note) {
-  
+
     note._date = new Date().toLocaleString();
     //get the data from local storage
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
@@ -235,3 +241,16 @@ function DeleteNotes(ids) {
     localStorage.setItem(this.NOTES_DELETED_STORE, JSON.stringify(deleted_array));
 }
 
+
+
+document.querySelector('.restoreall').addEventListener('click', () => {
+    let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
+    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+    for (let i of deleted_array) {
+        main_data_array.push(i);
+    }
+    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(main_data_array));
+    localStorage.setItem(NOTES_DELETED_STORE, JSON.stringify([]));
+    populateData();
+    document.location.reload(true);
+});
