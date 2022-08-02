@@ -7,9 +7,6 @@ const NOTES_MAIN_STORE = "MAIN_STORE";
 const NOTES_DELETED_STORE = "DELETED_STORE";
 const root = document.getElementById('populate');
 
-let somefunction = function () {
-    let note = new Note(1, 't', 't');
-}
 
 //************ EVENTS ******************** */
 populateData();
@@ -62,6 +59,8 @@ root.querySelectorAll('._delete').forEach(element => {
 //         alert('Note Updated');
 //     }
 // }
+
+//when edit button is clicked
 root.querySelectorAll('.edit').forEach(element => {
     element.addEventListener('click', () => {
         document.getElementById('add').disabled = true;
@@ -83,7 +82,7 @@ root.querySelectorAll('.edit').forEach(element => {
                         document.getElementById("text1").value = '';
                         document.getElementById('desc').value = '';
                         alert('Note Updated');
-                        document.location.reload(true);
+                        // document.location.reload(true);
                     }
                 });
 
@@ -112,7 +111,7 @@ function clr() {
 
 function populateData() {
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    if (main_data_array != null) {
+    if (main_data_array.length!=0) {
         let str = "";
         let sNo = 1;
         main_data_array.sort((a, b) => {
@@ -135,6 +134,10 @@ function populateData() {
         root.innerHTML = str;
 
     }
+    else{
+        root.innerHTML = `<h1>No Notes Available<h1>`
+    }
+
 }
 
 function GetMaxIdFromNotes(main_data_array) {
@@ -173,30 +176,26 @@ function deleteNote(id) {
 }
 
 
-function UpdateNotes(note) {
+function UpdateNotes(noteToSave) {
 
-    note._date = new Date().toLocaleString();
-    //get the data from local storage
+    
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    // let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
-    let searched_item = main_data_array.filter(t => t.id == note.id);
-    //let index = main_data_array.findIndex(x => x.Id === id);
-    // console.log('indexss',index);
-    if (searched_item != null) {
-        let index = searched_item[0].id;
-        console.log(index)
-        main_data_array.splice(index - 1, 1, note);
+    
+    const existing = main_data_array.find(note =>note.id==noteToSave.id);
+    
+     if (existing) {
+        existing.title = noteToSave.title;
+        existing.desc = noteToSave.desc;
+        existing._date = new Date().toLocaleString();
     }
+
     localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(main_data_array));
 
 }
 
 
 
-/**
- * This function will add notes to the collection
- * ids - .Comma separted ids
- */
+
 function DeleteNotes(ids) {
 
     let x = [];
@@ -242,7 +241,7 @@ function DeleteNotes(ids) {
 }
 
 
-
+//when restore button is clicked...
 document.querySelector('.restoreall').addEventListener('click', () => {
     let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
