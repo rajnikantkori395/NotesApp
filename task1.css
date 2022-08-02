@@ -1,5 +1,10 @@
+*{
+    box-sizing: border-box;
+}
 body{
-    
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }
 .container{
     
@@ -22,6 +27,7 @@ body{
     background-color: rgb(58, 54, 54);
 }
 #text1,.text2{
+    font-size: 16px;
     position: relative;
     width: 570px;
     font-size: medium;
@@ -34,6 +40,7 @@ body{
     height: 40px;
 }
 .text2{
+    font-size: 18px;
     top: 40px;
     height: 130px;
 }
@@ -51,10 +58,14 @@ body{
 /* //below output part */
 .box2{
 position: absolute;
-
+}
+.box2 h1{
+    padding-left: 100px;
 }
 .box2-2{
-    margin-right: 20px;
+    padding:0 15px;
+    margin-right:15px;
+    margin-bottom: 15px;
     float: right;
     color: white;
     height: 300px;
@@ -62,18 +73,24 @@ position: absolute;
     background-color: rgb(58, 54, 54);
    
 }
-
-.note-title,.note,.delete,.edit{
-position: relative;
-top: 39px;
-left: 9.5%;
+ 
+.note-title,.note,._delete,.edit{
+position: absolute;
+width: 100%;
+padding: 0 15px;
+justify-content: space-around;
 }
-.delete,.edit{
+.note {
+    padding-top: 30px;
+}
+._delete,.edit{
 border-style: none;
 border-radius: 5px;
 background-color: rgb(21, 192, 24);
 position: relative;
-top: 100px;
+width: 100%;
+top: 140px;
+margin-left: 09px;
 height: 40px;
 width: 120px;
 color: rgb(241, 255, 240);
@@ -81,7 +98,7 @@ color: rgb(241, 255, 240);
 .edit{
 background-color: rgb(187, 21, 21);
 }
-.delete:hover{
+._delete:hover{
     background-color: rgba(21, 192, 24, 0.84);
 }
 .edit:hover{
@@ -93,7 +110,18 @@ background-color: rgb(187, 21, 21);
 .date{
 position: absolute;
 top: 80%;
-left: 65%;
-font-size: 13px;
+text-align: right;
+width: 100%;
+padding: 0 20px;
+font-size: 16px;
+
+}
+#populate{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    margin: 15px;
+    padding-top: 20px;
 
 }
