@@ -6,6 +6,8 @@ import Note from "./models.js";
 const NOTES_MAIN_STORE = "MAIN_STORE";
 const NOTES_DELETED_STORE = "DELETED_STORE";
 const root = document.getElementById('populate');
+let cboxid="";
+
 
 
 //************ EVENTS ******************** */
@@ -40,26 +42,6 @@ root.querySelectorAll('._delete').forEach(element => {
     });
 });
 
-// function onEditNoteClick(id) {
-
-// }
-// document.querySelector('.edt').addEventListener('click', editt);
-// function editt() {
-
-//     let title = document.getElementById("text1").value;
-//     let desc = document.getElementById('desc').value;
-//     let id = prompt("enter title no.");
-//     if (id) {
-//         let note = new Note(id, title, desc);
-//         UpdateNotes(note);
-//         console.log(note);
-//         populateData();
-//         document.getElementById("text1").value = '';
-//         document.getElementById('desc').value = '';
-//         alert('Note Updated');
-//     }
-// }
-
 //when edit button is clicked
 root.querySelectorAll('.edit').forEach(element => {
     element.addEventListener('click', () => {
@@ -82,7 +64,7 @@ root.querySelectorAll('.edit').forEach(element => {
                         document.getElementById("text1").value = '';
                         document.getElementById('desc').value = '';
                         alert('Note Updated');
-                        // document.location.reload(true);
+                        document.location.reload(true);
                     }
                 });
 
@@ -90,6 +72,18 @@ root.querySelectorAll('.edit').forEach(element => {
         }
     });
 });
+
+ root.querySelectorAll(".cbox").forEach(element=>
+    element.addEventListener('click',()=>{
+        cboxid += element.dataset.checkId;
+        let x=cboxid.split('');
+        console.log(x);
+        document.querySelector(".delselect").addEventListener('click',()=>{
+         DeleteSelected(x);
+         document.location.reload(true);
+        });
+        
+    }));
 
 
 
@@ -120,9 +114,9 @@ function populateData() {
         main_data_array.forEach((element) => {
 
             str = str +
-                `<div class="box2-2">
-                <h3>${sNo}</h3>
-            <h3 class="note-title">${element.title}</h3>
+                `<div class="box2-2" data-box-id="${element.id}">
+                <h3><input type="checkbox" data-check-id="${element.id}" class="cbox">${sNo}</h3>
+            <h3 class="note-title" >${element.title}</h3>
             <p class="note">${element.desc}</p>
             <button class="_delete" data-delete-id="${element.id}">Delete Note</button>
             <button class="edit" data-edit-id=${element.id} >Edit Note</button>
@@ -196,48 +190,19 @@ function UpdateNotes(noteToSave) {
 
 
 
-function DeleteNotes(ids) {
+function DeleteSelected(ids) {
 
-    let x = [];
-    x.includes
-
-    const arr_numeric = ids.split(',').map(element => {
-        return Number(element);
-    });
-
-    //getItem the data from local storage
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    let deleted_array = JSON.parse(localStorage.getItem(this.NOTES_DELETED_STORE) || '[]');
+     for(let id of ids){
+        var delNotes = main_data_array.find(note=>note.id==id);
+        console.log(delNotes);
+     }
+   let newArray  = main_data_array.filter(t=>t.id!=delNotes.id);
+//    let newDelArray  = main_data_array.filter(t=>t.id==delNotes.id);
+   localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newArray));
+     
+    
 
-    let searched_items = main_data_array.filter(function (e) {
-
-        return arr_numeric.includes(t.id);
-    });
-
-    let indexes = main_data_array.findIndex(function (e) {
-
-        return arr_numeric.includes(t.id);
-    });
-
-    //let index = main_data_array.findIndex( x => x.Id === id );
-
-    if (searched_item != null && searched_items.length > 0) {
-
-        deleted_array.push(searched_items);
-
-        for (let i = 0; i < indexes.length; i++) {
-            main_data_array.splice(indexes[i], 1);
-        }
-        //apply remove logic
-    }
-
-
-    //after this step we will have id populated with max id value.
-    note.id = this.getMaxIdFromNotes(main_data_array, deleted_array) + 1;
-    main_data_array.push(note);
-
-    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(main_data_array));
-    localStorage.setItem(this.NOTES_DELETED_STORE, JSON.stringify(deleted_array));
 }
 
 
