@@ -205,6 +205,13 @@ function DeleteSelected(ids) {
 
 }
 
+document.querySelector('.archive').addEventListener('click',()=>{
+    root.style.visibility= "hidden";
+});
+document.querySelector('.show').addEventListener('click',()=>{
+root.style.visibility= "visible";
+});
+
 
 //when restore button is clicked...
 document.querySelector('.restoreall').addEventListener('click', () => {
@@ -218,3 +225,5 @@ document.querySelector('.restoreall').addEventListener('click', () => {
     populateData();
     document.location.reload(true);
 });
+
+
