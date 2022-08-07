@@ -193,10 +193,12 @@ function UpdateNotes(noteToSave) {
 function DeleteSelected(ids) {
 
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+    let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
      for(let id of ids){
         var delNotes = main_data_array.find(note=>note.id==id);
         console.log(delNotes);
      }
+     deleted_array.push(delNotes);
    let newArray  = main_data_array.filter(t=>t.id!=delNotes.id);
 //    let newDelArray  = main_data_array.filter(t=>t.id==delNotes.id);
    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newArray));
@@ -224,6 +226,21 @@ document.querySelector('.restoreall').addEventListener('click', () => {
     localStorage.setItem(NOTES_DELETED_STORE, JSON.stringify([]));
     populateData();
     document.location.reload(true);
+});
+
+document.querySelector('.search-btn').addEventListener('click', () => {
+    let stitle = document.querySelector('.search').value;
+    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+    let searched_item = main_data_array.find(element => element.title == stitle);
+    root.innerHTML = `<div class="box2-2">
+    <h3><input type="checkbox" data-check-id="${searched_item.id}" class="cbox">1</h3>
+<h3 class="note-title">${searched_item.title}</h3>
+<p class="note">${searched_item.desc}</p>
+<button class="_delete" data-delete-id="${searched_item.id}">Delete Note</button>
+<button class="edit" data-edit-id="${searched_item.id}">Edit Note</button>
+<p class="date">${searched_item._date} </p>
+</div>`
+
 });
 
 
