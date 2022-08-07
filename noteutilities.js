@@ -2,13 +2,10 @@
 
 import Note from "./models.js";
 
-
 const NOTES_MAIN_STORE = "MAIN_STORE";
 const NOTES_DELETED_STORE = "DELETED_STORE";
 const root = document.getElementById('populate');
 let cboxid="";
-
-
 
 //************ EVENTS ******************** */
 populateData();
@@ -30,7 +27,6 @@ document.getElementById('add').addEventListener('click', () => {
     }
 });
 // when delete button clicked
-
 root.querySelectorAll('._delete').forEach(element => {
     element.addEventListener('click', () => {
         const doDelete = confirm('Are you sure?');
@@ -67,12 +63,11 @@ root.querySelectorAll('.edit').forEach(element => {
                         document.location.reload(true);
                     }
                 });
-
             }
         }
     });
 });
-
+// when check box is clicked 
  root.querySelectorAll(".cbox").forEach(element=>
     element.addEventListener('click',()=>{
         cboxid += element.dataset.checkId;
@@ -86,135 +81,12 @@ root.querySelectorAll('.edit').forEach(element => {
     }));
 
 
-
-
-
-
-
-function onDeleteNotesClick(holderControl) {
-    //evaluate all the checkboxes that are checked 
-}
-//***************************** END OF EVENTS  ********************** */
+//when clear All Button is Clicked
 document.querySelectorAll('.clr')[0].addEventListener('click', clr);
 function clr() {
     localStorage.clear();
     populateData();
 }
-
-
-
-function populateData() {
-    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    if (main_data_array.length!=0) {
-        let str = "";
-        let sNo = 1;
-        main_data_array.sort((a, b) => {
-            return new Date(a._date) > new Date(b._date) ? -1 : 1;
-        });
-        main_data_array.forEach((element) => {
-
-            str = str +
-                `<div class="box2-2" data-box-id="${element.id}">
-                <h3><input type="checkbox" data-check-id="${element.id}" class="cbox">${sNo}</h3>
-            <h3 class="note-title" >${element.title}</h3>
-            <p class="note">${element.desc}</p>
-            <button class="_delete" data-delete-id="${element.id}">Delete Note</button>
-            <button class="edit" data-edit-id=${element.id} >Edit Note</button>
-            <p class="date">${element._date} </p>
-            </div>`
-
-            sNo++;
-        });
-        root.innerHTML = str;
-
-    }
-    else{
-        root.innerHTML = `<h1>No Notes Available<h1>`
-    }
-
-}
-
-function GetMaxIdFromNotes(main_data_array) {
-    let id = 0;
-    for (let i = 0; i < main_data_array.length; i++) {
-        id = main_data_array[i].id > id ? main_data_array[i].id : id;
-    }
-    return id;
-}
-
-function addNotes(note) {
-    //Increment the latest ID 
-    note._date = new Date().toLocaleString();
-    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-
-    note.id = GetMaxIdFromNotes(main_data_array) + 1;
-    main_data_array.push(note);
-    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(main_data_array));
-}
-
-function deleteNote(id) {
-    console.log(id);
-    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
-
-    let searched_item = main_data_array.filter(t => t.id == id);
-    // let index = main_data_array.findIndex(x => x.Id === id);
-    if (searched_item != null) {
-        deleted_array.push(searched_item[0]);
-        // main_data_array.splice(index, 1);
-        //apply remove logic
-    }
-    const newNotes = main_data_array.filter(note => note.id != id);
-    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newNotes));
-    localStorage.setItem(NOTES_DELETED_STORE, JSON.stringify(deleted_array));
-}
-
-
-function UpdateNotes(noteToSave) {
-
-    
-    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    
-    const existing = main_data_array.find(note =>note.id==noteToSave.id);
-    
-     if (existing) {
-        existing.title = noteToSave.title;
-        existing.desc = noteToSave.desc;
-        existing._date = new Date().toLocaleString();
-    }
-
-    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(main_data_array));
-
-}
-
-
-
-
-function DeleteSelected(ids) {
-
-    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
-     for(let id of ids){
-        var delNotes = main_data_array.find(note=>note.id==id);
-        console.log(delNotes);
-     }
-     deleted_array.push(delNotes);
-   let newArray  = main_data_array.filter(t=>t.id!=delNotes.id);
-//    let newDelArray  = main_data_array.filter(t=>t.id==delNotes.id);
-   localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newArray));
-     
-    
-
-}
-
-document.querySelector('.archive').addEventListener('click',()=>{
-    root.style.visibility= "hidden";
-});
-document.querySelector('.show').addEventListener('click',()=>{
-root.style.visibility= "visible";
-});
-
-
 //when restore button is clicked...
 document.querySelector('.restoreall').addEventListener('click', () => {
     let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
@@ -234,13 +106,110 @@ document.querySelector('.search-btn').addEventListener('click', () => {
     let searched_item = main_data_array.find(element => element.title == stitle);
     root.innerHTML = `<div class="box2-2">
     <h3><input type="checkbox" data-check-id="${searched_item.id}" class="cbox">1</h3>
-<h3 class="note-title">${searched_item.title}</h3>
-<p class="note">${searched_item.desc}</p>
-<button class="_delete" data-delete-id="${searched_item.id}">Delete Note</button>
-<button class="edit" data-edit-id="${searched_item.id}">Edit Note</button>
-<p class="date">${searched_item._date} </p>
-</div>`
-
+    <h3 class="note-title">${searched_item.title}</h3>
+    <p class="note">${searched_item.desc}</p>
+    <button class="_delete" data-delete-id="${searched_item.id}">Delete Note</button>
+    <button class="edit" data-edit-id="${searched_item.id}">Edit Note</button>
+    <p class="date">${searched_item._date} </p>
+    </div>`
 });
 
+
+//***************************** END OF EVENTS  ********************** */
+
+function populateData() {
+    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+    if (main_data_array.length!=0) {
+        let str = "";
+        let sNo = 1;
+        main_data_array.sort((a, b) => {
+            return new Date(a._date) > new Date(b._date) ? -1 : 1;
+        });
+        main_data_array.forEach((element) => {
+            str = str +
+                `<div class="box2-2" data-box-id="${element.id}">
+                <h3><input type="checkbox" data-check-id="${element.id}" class="cbox">${sNo}</h3>
+            <h3 class="note-title" >${element.title}</h3>
+            <p class="note">${element.desc}</p>
+            <button class="_delete" data-delete-id="${element.id}">Delete Note</button>
+            <button class="edit" data-edit-id=${element.id} >Edit Note</button>
+            <p class="date">${element._date} </p>
+            </div>`
+            sNo++;
+        });
+        root.innerHTML = str;
+    }
+    else{
+        root.innerHTML = `<h1>No Notes Available<h1>`
+    }
+}
+
+function GetMaxIdFromNotes(main_data_array) {
+    let id = 0;
+    for (let i = 0; i < main_data_array.length; i++) {
+        id = main_data_array[i].id > id ? main_data_array[i].id : id;
+    }
+    return id;
+}
+
+function addNotes(note) {
+    //Increment the latest ID 
+    note._date = new Date().toLocaleString();
+    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+    note.id = GetMaxIdFromNotes(main_data_array) + 1;
+    main_data_array.push(note);
+    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(main_data_array));
+}
+
+
+function deleteNote(id) {
+    console.log(id);
+    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+    let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
+
+    let searched_item = main_data_array.filter(t => t.id == id);
+    // let index = main_data_array.findIndex(x => x.Id === id);
+    if (searched_item != null) {
+        deleted_array.push(searched_item[0]);
+        // main_data_array.splice(index, 1);
+        //apply remove logic
+    }
+    const newNotes = main_data_array.filter(note => note.id != id);
+    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newNotes));
+    localStorage.setItem(NOTES_DELETED_STORE, JSON.stringify(deleted_array));
+}
+
+
+function UpdateNotes(noteToSave) {    
+    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+    const existing = main_data_array.find(note =>note.id==noteToSave.id);
+     if (existing) {
+        existing.title = noteToSave.title;
+        existing.desc = noteToSave.desc;
+        existing._date = new Date().toLocaleString();
+    }
+    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(main_data_array));
+}
+
+
+function DeleteSelected(ids) {
+    let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
+    let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
+     for(let id of ids){
+        var delNotes = main_data_array.find(note=>note.id==id);
+        console.log(delNotes);
+     }
+     deleted_array.push(delNotes);
+   let newArray  = main_data_array.filter(t=>t.id!=delNotes.id);
+// let newDelArray  = main_data_array.filter(t=>t.id==delNotes.id);
+   localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newArray));
+    localStorage.setItem(NOTES_DELETED_STORE, JSON.stringify(deleted_array));
+}
+    
+document.querySelector('.archive').addEventListener('click',()=>{
+    root.style.visibility= "hidden";
+});
+document.querySelector('.show').addEventListener('click',()=>{
+root.style.visibility= "visible";
+});
 
