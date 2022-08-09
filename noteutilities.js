@@ -5,7 +5,7 @@ import Note from "./models.js";
 const NOTES_MAIN_STORE = "MAIN_STORE";
 const NOTES_DELETED_STORE = "DELETED_STORE";
 const root = document.getElementById('populate');
-let cboxid="";
+let cboxid = "";
 
 //************ EVENTS ******************** */
 populateData();
@@ -68,16 +68,16 @@ root.querySelectorAll('.edit').forEach(element => {
     });
 });
 // when check box is clicked 
- root.querySelectorAll(".cbox").forEach(element=>
-    element.addEventListener('click',()=>{
+root.querySelectorAll(".cbox").forEach(element =>
+    element.addEventListener('click', () => {
         cboxid += element.dataset.checkId;
-        let x=cboxid.split('');
+        let x = cboxid.split('');
         console.log(x);
-        document.querySelector(".delselect").addEventListener('click',()=>{
-         DeleteSelected(x);
-         document.location.reload(true);
+        document.querySelector(".delselect").addEventListener('click', () => {
+            DeleteSelected(x);
+            document.location.reload(true);
         });
-        
+
     }));
 
 
@@ -115,19 +115,19 @@ document.querySelector('.search-btn').addEventListener('click', () => {
 });
 
 //when archive button is clicked...
-document.querySelector('.archive').addEventListener('click',()=>{
-    root.style.visibility= "hidden";
+document.querySelector('.archive').addEventListener('click', () => {
+    root.style.visibility = "hidden";
 });
 //when show all button is clicked...
-document.querySelector('.show').addEventListener('click',()=>{
-root.style.visibility= "visible";
+document.querySelector('.show').addEventListener('click', () => {
+    root.style.visibility = "visible";
 });
 
 //***************************** END OF EVENTS  ********************** */
 
 function populateData() {
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    if (main_data_array.length!=0) {
+    if (main_data_array.length != 0) {
         let str = "";
         let sNo = 1;
         main_data_array.sort((a, b) => {
@@ -147,7 +147,7 @@ function populateData() {
         });
         root.innerHTML = str;
     }
-    else{
+    else {
         root.innerHTML = `<h1>No Notes Available<h1>`
     }
 }
@@ -188,10 +188,10 @@ function deleteNote(id) {
 }
 
 
-function UpdateNotes(noteToSave) {    
+function UpdateNotes(noteToSave) {
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
-    const existing = main_data_array.find(note =>note.id==noteToSave.id);
-     if (existing) {
+    const existing = main_data_array.find(note => note.id == noteToSave.id);
+    if (existing) {
         existing.title = noteToSave.title;
         existing.desc = noteToSave.desc;
         existing._date = new Date().toLocaleString();
@@ -203,14 +203,14 @@ function UpdateNotes(noteToSave) {
 function DeleteSelected(ids) {
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
     let deleted_array = JSON.parse(localStorage.getItem(NOTES_DELETED_STORE) || '[]');
-     for(let id of ids){
-        var delNotes = main_data_array.find(note=>note.id==id);
+    for (let id of ids) {
+        var delNotes = main_data_array.find(note => note.id == id);
         console.log(delNotes);
-     }
-     deleted_array.push(delNotes);
-   let newArray  = main_data_array.filter(t=>t.id!=delNotes.id);
-   localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newArray));
+    }
+    deleted_array.push(delNotes);
+    let newArray = main_data_array.filter(t => t.id != delNotes.id);
+    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newArray));
     localStorage.setItem(NOTES_DELETED_STORE, JSON.stringify(deleted_array));
 }
-  
+
 
