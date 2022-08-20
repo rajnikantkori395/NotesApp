@@ -81,7 +81,7 @@ root.querySelectorAll('.edit').forEach(element => {
     }));
 
 
-//when clear All Button is Clicked
+//when clear All Button is Clicked...
 document.querySelectorAll('.clr')[0].addEventListener('click', clr);
 function clr() {
     localStorage.clear();
@@ -99,7 +99,7 @@ document.querySelector('.restoreall').addEventListener('click', () => {
     populateData();
     document.location.reload(true);
 });
-
+//when search button is clicked...
 document.querySelector('.search-btn').addEventListener('click', () => {
     let stitle = document.querySelector('.search').value;
     let main_data_array = JSON.parse(localStorage.getItem(NOTES_MAIN_STORE) || '[]');
@@ -114,6 +114,14 @@ document.querySelector('.search-btn').addEventListener('click', () => {
     </div>`
 });
 
+//when archive button is clicked...
+document.querySelector('.archive').addEventListener('click',()=>{
+    root.style.visibility= "hidden";
+});
+//when show all button is clicked...
+document.querySelector('.show').addEventListener('click',()=>{
+root.style.visibility= "visible";
+});
 
 //***************************** END OF EVENTS  ********************** */
 
@@ -201,15 +209,8 @@ function DeleteSelected(ids) {
      }
      deleted_array.push(delNotes);
    let newArray  = main_data_array.filter(t=>t.id!=delNotes.id);
-// let newDelArray  = main_data_array.filter(t=>t.id==delNotes.id);
    localStorage.setItem(NOTES_MAIN_STORE, JSON.stringify(newArray));
     localStorage.setItem(NOTES_DELETED_STORE, JSON.stringify(deleted_array));
 }
-    
-document.querySelector('.archive').addEventListener('click',()=>{
-    root.style.visibility= "hidden";
-});
-document.querySelector('.show').addEventListener('click',()=>{
-root.style.visibility= "visible";
-});
+  
 
