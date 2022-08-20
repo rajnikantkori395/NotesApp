@@ -1,6 +1,6 @@
 
 
-export default class Note {
+class Note {
     id;
     title;
     desc;
@@ -13,3 +13,5 @@ export default class Note {
         this._date = _date;
     }
 }
+
+export default Note;
